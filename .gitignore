@@ -1,0 +1,10 @@
+﻿bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Configuration files containing credentials
+appsettings.json
+appsettings.Development.json
