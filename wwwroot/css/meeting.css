@@ -1,0 +1,1024 @@
+ * {
+     box-sizing: border-box;
+ }
+
+ body {
+     margin: 0;
+     min-height: 100vh;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     padding: 24px;
+     font-family: Arial, sans-serif;
+     background: #f4f6fb;
+     color: #172033;
+ }
+
+ .meeting-card {
+     width: 100%;
+     max-width: 620px;
+     padding: 36px;
+     background: #ffffff;
+     border-radius: 18px;
+     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+ }
+
+ .brand {
+     margin-bottom: 28px;
+     color: #2563eb;
+     font-size: 24px;
+     font-weight: bold;
+ }
+
+ h1 {
+     margin: 0 0 12px;
+     font-size: 30px;
+ }
+
+ .description {
+     margin-bottom: 24px;
+     color: #667085;
+     line-height: 1.6;
+     white-space: pre-wrap;
+ }
+
+ .details {
+     padding: 20px;
+     background: #f8fafc;
+     border-radius: 12px;
+ }
+
+ .detail-row {
+     display: flex;
+     justify-content: space-between;
+     gap: 16px;
+     margin: 12px 0;
+ }
+
+ .label {
+     color: #667085;
+ }
+
+ .value {
+     text-align: right;
+     font-weight: 600;
+     overflow-wrap: anywhere;
+ }
+
+ .status {
+     display: inline-block;
+     padding: 6px 12px;
+     border-radius: 20px;
+     background: #e0e7ff;
+     color: #3730a3;
+     font-size: 13px;
+ }
+
+ .message {
+     margin-top: 20px;
+     color: #b42318;
+ }
+
+ .back-link {
+     display: inline-block;
+     margin-top: 24px;
+     color: #2563eb;
+     text-decoration: none;
+     font-weight: 600;
+ }
+
+
+
+
+ .join-section {
+     margin-top: 28px;
+     padding-top: 24px;
+     border-top: 1px solid #eaecf0;
+ }
+
+ .join-section h2,
+ .joined-section h2 {
+     margin: 0 0 10px;
+     font-size: 22px;
+ }
+
+ .join-section p,
+ .joined-section p {
+     color: #667085;
+     line-height: 1.5;
+ }
+
+ #joinForm {
+     display: flex;
+     flex-direction: column;
+     gap: 12px;
+     margin-top: 20px;
+ }
+
+ #joinForm label {
+     font-size: 14px;
+     font-weight: 600;
+ }
+
+ #displayName {
+     width: 100%;
+     padding: 13px 14px;
+     border: 1px solid #d0d5dd;
+     border-radius: 8px;
+     font-size: 16px;
+     outline: none;
+ }
+
+ #displayName:focus {
+     border-color: #2563eb;
+     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+ }
+
+ #joinButton {
+     width: 100%;
+     padding: 14px;
+     border: none;
+     border-radius: 8px;
+     background: #2563eb;
+     color: white;
+     font-size: 16px;
+     font-weight: 600;
+     cursor: pointer;
+ }
+
+ #joinButton:hover {
+     background: #0f56ee;
+ }
+
+ #joinButton:disabled {
+     background: #a5a5a5;
+     cursor: not-allowed;
+ }
+
+ .joined-section {
+     margin-top: 28px;
+     padding: 24px;
+     border-radius: 12px;
+     background: #ecfdf3;
+     color: #027a48;
+ }
+
+ .waiting-message {
+     margin-top: 16px;
+     padding: 14px;
+     border-radius: 8px;
+     background: #ffffff;
+     color: #475467;
+     line-height: 1.5;
+ }
+
+ [hidden] {
+     display: none !important;
+ }
+
+ /* Full-screen popup backdrop */
+ .conference-popup {
+     position: fixed;
+     inset: 0;
+     z-index: 9999;
+
+     display: flex;
+     align-items: center;
+     justify-content: center;
+
+     padding: 20px;
+     box-sizing: border-box;
+
+     background: rgba(15, 23, 42, 0.82);
+ }
+
+
+ /* Large conference window */
+ .conference-window {
+     width: 100%;
+     height: 100%;
+     max-width: 1600px;
+     max-height: 950px;
+
+     display: flex;
+     flex-direction: column;
+
+     overflow: hidden;
+     border-radius: 14px;
+
+     background: #111827;
+     color: #f9fafb;
+
+     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+ }
+
+
+ /* Header */
+ .conference-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+
+     padding: 16px 24px;
+     border-bottom: 1px solid #374151;
+ }
+
+ .conference-header h2 {
+     margin: 0;
+     font-size: 22px;
+ }
+
+ .conference-header p {
+     margin: 5px 0 0;
+     color: #9ca3af;
+     font-size: 14px;
+ }
+
+ .close-conference-button {
+     width: 40px;
+     height: 40px;
+
+     border: none;
+     border-radius: 8px;
+
+     background: #374151;
+     color: white;
+
+     font-size: 28px;
+     cursor: pointer;
+ }
+
+ .close-conference-button:hover {
+     background: #4b5563;
+ }
+
+
+ /* Main content */
+ /* =========================
+   Main Conference Layout
+   ========================= */
+
+.conference-main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    gap: 18px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Video area takes all available space */
+.conference-video-section {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* =========================
+   Video Grid
+   ========================= */
+
+.video-grid {
+    display: grid;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    gap: 16px;
+
+    align-content: start;
+}
+
+/* Keep video cards consistent */
+.video-card {
+    position: relative;
+
+    width: 100%;
+    aspect-ratio: 16 / 9;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background: #263244;
+    border: 1px solid #374151;
+}
+
+/* Remote videos become part of the same grid */
+.remote-videos {
+    display: contents;
+}
+
+/* =========================
+   Participant Video Card
+   ========================= */
+
+/* Single participant with no Chat/Participants sidebar */
+.video-grid.single-video {
+    grid-template-columns: 1fr;
+    height: 100%;
+}
+
+.video-grid.single-video .video-card {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+}
+
+
+.video-card {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+
+    aspect-ratio: 16 / 9;
+
+    overflow: hidden;
+    border-radius: 12px;
+
+    background: #263244;
+    border: 1px solid #374151;
+}
+
+.video-card video {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    background: #263244;
+}
+
+
+ /* Username label */
+ .video-label {
+     position: absolute;
+     left: 12px;
+     bottom: 12px;
+
+     padding: 7px 12px;
+     border-radius: 6px;
+
+     background: rgba(0, 0, 0, 0.7);
+     color: white;
+
+     font-size: 14px;
+     font-weight: 500;
+ }
+
+
+ /* Participants sidebar */
+ .participants-sidebar {
+     width: 250px;
+     flex-shrink: 0;
+
+     padding: 16px;
+     overflow-y: auto;
+
+     border-radius: 10px;
+     background: #1f2937;
+ }
+
+ .participants-sidebar h3 {
+     margin-top: 0;
+     font-size: 17px;
+ }
+
+ .participants-sidebar ul {
+     padding: 0;
+     margin: 0;
+     list-style: none;
+ }
+
+ .participants-sidebar li {
+     padding: 10px 8px;
+     border-bottom: 1px solid #374151;
+
+     overflow-wrap: anywhere;
+ }
+
+
+ /* Bottom controls */
+ .conference-controls {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     flex-wrap: wrap;
+     gap: 12px;
+
+     padding: 18px;
+     border-top: 1px solid #374151;
+     background: #1f2937;
+ }
+
+ .conference-control-button {
+     padding: 12px 20px;
+     border: none;
+     border-radius: 8px;
+     background: #374151;
+     color: white;
+     font-size: 14px;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     gap: 9px;
+     min-height: 48px;
+ }
+
+ .conference-control-button .control-icon {
+     width: 24px;
+     height: 24px;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 22px;
+     line-height: 1;
+ }
+
+ .conference-control-button .control-icon img {
+     width: 24px;
+     height: 24px;
+     object-fit: contain;
+ }
+
+ .conference-control-button.is-off {
+     background: #b42318;
+ }
+
+ .conference-control-button.is-off:hover {
+     background: #912018;
+ }
+
+ .participant-status-icons {
+     display: inline-flex;
+     align-items: center;
+     gap: 7px;
+     margin-left: auto;
+     padding-left: 10px;
+ }
+
+ .participant-status-icon {
+     width: 20px;
+     height: 20px;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 17px;
+     line-height: 1;
+ }
+
+ .participant-status-icon img {
+     width: 20px;
+     height: 20px;
+     object-fit: contain;
+ }
+
+ .video-status-icons {
+     position: absolute;
+     top: 10px;
+     right: 10px;
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     z-index: 2;
+ }
+
+ .video-status-icons .participant-status-icon {
+     width: 30px;
+     height: 30px;
+     border-radius: 50%;
+     background: rgba(0, 0, 0, 0.68);
+ }
+
+ .video-status-icons .participant-status-icon img {
+     width: 18px;
+     height: 18px;
+ }
+
+ .conference-control-button:hover {
+     background: #4b5563;
+ }
+
+ .leave-button {
+     background: #dc2626;
+ }
+
+ .leave-button:hover {
+     background: #b91c1c;
+ }
+
+
+
+ .end-meeting-button {
+     background: #b42318;
+     color: white;
+ }
+
+ .end-meeting-button:hover {
+     background: #912018;
+ }
+
+ .end-meeting-button:disabled {
+     background: #a5a5a5;
+     cursor: not-allowed;
+ }
+
+ 
+
+
+ .video-placeholder {
+     position: absolute;
+     inset: 0;
+
+     display: flex;
+     align-items: center;
+     justify-content: center;
+
+     background: #263244;
+     color: #f9fafb;
+
+     font-size: 22px;
+     font-weight: 600;
+     text-align: center;
+     overflow-wrap: anywhere;
+     padding: 20px;
+ }
+
+
+
+ /* =========================
+   Chat Sidebar
+   ========================= */
+
+.chat-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background: #ffffff;
+    border-left: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.chat-header {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #000;
+}
+.chat-messages {
+    flex: 1 1 auto;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 9px 12px;
+}
+
+
+/* .chat-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 78%;
+    margin-bottom: 10px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    word-wrap: break-word;
+} */
+
+
+
+.chat-message-sender {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.chat-message-text {
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* Sent messages - right side */
+
+
+.chat-message.sent {
+    margin-left: auto;
+    margin-right: 4px;
+    background: #1546a9;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: right;
+    width: 78%;
+    margin-top: 8px;
+}
+
+.chat-message.sent .chat-message-sender {
+    color: #dbe7ff;
+}
+
+
+/* Received messages - left side */
+
+.chat-message.received {
+    margin-left: 4px;
+    margin-top: 8px;
+    margin-right: auto;
+    background: #eef2f7;
+    color: #1f2937;
+    /* border-bottom-left-radius: 4px; */
+    padding: 5px;
+    width: 60%;
+    border-radius: 5px;
+}
+
+.chat-message.received .chat-message-sender {
+    color: #526173;
+}
+
+.chat-input-area {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    padding: 12px 12px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 8px;
+    /* margin-bottom: 0px; */
+}
+
+#chatInput {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+}
+
+#chatInput:focus {
+    border-color: #2563eb;
+}
+
+#sendChatButton {
+    padding: 9px 14px;
+    border: none;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+#sendChatButton:hover {
+    background: #1d4ed8;
+}
+
+#sendChatButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Right Sidebar Container
+   ========================= */
+
+/* =========================
+   Right Sidebar Container
+   ========================= */
+
+.right-sidebar-container {
+    width: 0;
+    height: 100%;
+    min-height: 0;
+
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    overflow: hidden;
+
+    transition: width 0.2s ease;
+}
+
+/* Sidebar becomes visible when Chat or Participants is open */
+.conference-main.side-panel-visible .right-sidebar-container {
+    width: 300px;
+}
+
+/* When one or both panels are visible */
+.right-sidebar-container > .participants-sidebar,
+.right-sidebar-container > .chat-sidebar {
+    width: 100%;
+    min-height: 0;
+
+    flex: 1 1 0;
+}
+
+/* Participants panel */
+.right-sidebar-container > .participants-sidebar {
+    overflow-y: auto;
+
+    padding: 16px;
+
+    border-radius: 10px;
+    background: #1f2937;
+}
+
+/* Chat panel */
+.right-sidebar-container > .chat-sidebar {
+    overflow: hidden;
+}
+
+
+/* Two videos per row when Chat or Participants is visible */
+/* .conference-main.side-panel-visible .video-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+} */
+
+
+/* =========================================
+   Video Fullscreen Button
+   ========================================= */
+
+.video-fullscreen-button {
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 8px;
+
+    background: rgba(0, 0, 0, 0.65);
+    color: #ffffff;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    opacity: 0;
+    transition: opacity 0.2s ease,
+                background 0.2s ease;
+}
+
+/* Show button when hovering video card */
+.video-card:hover .video-fullscreen-button {
+    opacity: 1;
+}
+
+/* Keep it visible on touch/mobile devices */
+@media (max-width: 850px) {
+    .video-fullscreen-button {
+        opacity: 1;
+    }
+}
+
+.video-fullscreen-button:hover {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+/* Expanded participant view */
+.video-grid.single-participant-view {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.video-grid.single-participant-view .video-card {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+}
+
+.video-grid.single-participant-view .video-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+.video-card:fullscreen .video-placeholder {
+    width: 100%;
+    height: 100%;
+}
+
+.video-card:fullscreen .video-label {
+    bottom: 20px;
+    left: 20px;
+}
+
+
+
+/* =========================================
+   Mobile Responsive
+   ========================================= */
+
+@media (max-width: 520px) {
+    .meeting-card {
+        padding: 24px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+}
+
+
+@media (max-width: 850px) {
+
+    /* Conference popup */
+    .conference-popup {
+        padding: 0;
+    }
+
+    .conference-window {
+        max-height: none;
+        border-radius: 0;
+    }
+
+
+    /* Main conference area */
+    .conference-main {
+        flex-direction: column;
+
+        padding: 12px;
+
+        gap: 12px;
+
+        overflow-y: auto;
+    }
+
+
+    /* Video section */
+    .conference-video-section {
+        width: 100%;
+
+        flex: 0 0 auto;
+
+        overflow: visible;
+    }
+
+
+    /* Video grid */
+    .video-grid {
+        width: 100%;
+        height: auto;
+
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+
+        align-content: start;
+    }
+
+
+    /* Single participant on mobile */
+    .video-grid.single-video {
+        width: 100%;
+        height: auto;
+
+        grid-template-columns: 1fr;
+    }
+
+    .video-grid.single-video .video-card {
+        width: 100%;
+        height: auto;
+
+        aspect-ratio: 16 / 9;
+    }
+
+
+    /* All video cards */
+    .video-card {
+        width: 100%;
+        height: auto;
+
+        aspect-ratio: 16 / 9;
+    }
+
+    .video-card video {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+
+    /* =========================================
+       Right sidebar
+       ========================================= */
+
+    .right-sidebar-container {
+        width: 100%;
+
+        height: 300px;
+
+        flex: 0 0 auto;
+    }
+
+    .conference-main.side-panel-visible
+    .right-sidebar-container {
+        width: 100%;
+        height: 300px;
+    }
+
+
+    .participants-sidebar {
+        width: auto;
+    }
+
+
+    /* =========================================
+       Controls
+       ========================================= */
+
+    .conference-controls {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+
+        padding: 12px;
+    }
+
+
+    .conference-control-button {
+        width: 100%;
+
+        min-height: 64px;
+
+        justify-content: center;
+
+        box-sizing: border-box;
+    }
+
+
+    /* Microphone - full row */
+    #micButton {
+        grid-column: 1 / -1;
+    }
+
+
+    /* Camera + Chat */
+    #cameraButton {
+        grid-column: 1;
+    }
+
+    #chatToggleButton {
+        grid-column: 2;
+    }
+
+
+    /* Participants + Leave */
+    #participantsToggleButton {
+        grid-column: 1;
+    }
+
+    #leaveButton {
+        grid-column: 2;
+    }
+
+
+    /* End meeting */
+    #endMeetingButton {
+        grid-column: 1 / -1;
+    }
+}
+
+

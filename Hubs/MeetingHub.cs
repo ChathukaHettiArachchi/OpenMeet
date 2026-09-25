@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Rendezvous.Web.Data;
 using System.Text.Json;
+using Rendezvous.Web.Models;
 
 namespace Rendezvous.Web.Hubs
 {
@@ -95,29 +96,106 @@ namespace Rendezvous.Web.Hubs
             });
         }
 
-        public override async Task OnDisconnectedAsync(Exception? exception)
+        // Update microphone and camera status.
+public async Task UpdateMediaStatus(
+    bool isMutedAudio,
+    bool isMutedVideo)
+{
+    var participant = await _db.MeetingParticipants
+        .FirstOrDefaultAsync(p =>
+            p.ConnectionId == Context.ConnectionId &&
+            p.IsActive);
+
+    if (participant == null)
+        throw new HubException("You have not joined this meeting.");
+
+    participant.IsMutedAudio = isMutedAudio;
+    participant.IsMutedVideo = isMutedVideo;
+
+    await _db.SaveChangesAsync();
+
+    await Clients.OthersInGroup(
+        participant.MeetingId.ToString()
+    ).SendAsync("ParticipantMediaStatusChanged", new
+    {
+        participantId = participant.Id,
+        displayName = participant.DisplayName,
+        isMutedAudio = participant.IsMutedAudio,
+        isMutedVideo = participant.IsMutedVideo
+    });
+}
+
+
+// Send a chat message to everyone in the meeting.
+public async Task SendChatMessage(string message)
+{
+    if (string.IsNullOrWhiteSpace(message))
+        return;
+
+    message = message.Trim();
+
+    if (message.Length > 2000)
+        throw new HubException("Message is too long.");
+
+    var participant = await _db.MeetingParticipants
+        .FirstOrDefaultAsync(p =>
+            p.ConnectionId == Context.ConnectionId &&
+            p.IsActive);
+
+    if (participant == null)
+        throw new HubException("You have not joined this meeting.");
+
+    var chatMessage = new MeetingMessage
+    {
+        Id = Guid.NewGuid(),
+        MeetingId = participant.MeetingId,
+        SenderUserId = participant.UserId,
+        SenderDisplayName = participant.DisplayName,
+        Message = message,
+        SentAt = DateTime.UtcNow
+    };
+
+    _db.MeetingMessages.Add(chatMessage);
+
+    await _db.SaveChangesAsync();
+
+    await Clients.Group(participant.MeetingId.ToString())
+        .SendAsync("ReceiveChatMessage", new
         {
-            // Only update the row still bound to this exact connection. This avoids
-            // an old connection's disconnect event deactivating a newer reconnect.
-            var participant = await _db.MeetingParticipants
-                .FirstOrDefaultAsync(p => p.ConnectionId == Context.ConnectionId);
+            id = chatMessage.Id,
+            senderParticipantId = participant.Id,
+            senderDisplayName = chatMessage.SenderDisplayName,
+            message = chatMessage.Message,
+            sentAt = chatMessage.SentAt
+        });
+}
 
-            if (participant != null)
-            {
-                participant.ConnectionId = null;
-                participant.IsActive = false;
-                participant.LeftAt = DateTime.UtcNow;
-                await _db.SaveChangesAsync();
+// Handle participant disconnection.
+public override async Task OnDisconnectedAsync(Exception? exception)
+{
+    // Only update the row still bound to this exact connection.
+    var participant = await _db.MeetingParticipants
+        .FirstOrDefaultAsync(p =>
+            p.ConnectionId == Context.ConnectionId);
 
-                await Clients.OthersInGroup(participant.MeetingId.ToString())
-                    .SendAsync("ParticipantDisconnected", new
-                    {
-                        participantId = participant.Id,
-                        displayName = participant.DisplayName
-                    });
-            }
+    if (participant != null)
+    {
+        participant.ConnectionId = null;
+        participant.IsActive = false;
+        participant.LeftAt = DateTime.UtcNow;
 
-            await base.OnDisconnectedAsync(exception);
-        }
+        await _db.SaveChangesAsync();
+
+        await Clients.OthersInGroup(
+            participant.MeetingId.ToString()
+        ).SendAsync("ParticipantDisconnected", new
+        {
+            participantId = participant.Id,
+            displayName = participant.DisplayName
+        });
+    }
+
+    await base.OnDisconnectedAsync(exception);
+}
     }
 }
